@@ -1,6 +1,4 @@
 package com.example.projet2android_2458229
-
-import ads_mobile_sdk.h4
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -20,7 +18,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.*
-import androidx.navigation.navArgument
 import com.example.projet2android_2458229.ui.theme.Projet2Android_2458229Theme
 
 
