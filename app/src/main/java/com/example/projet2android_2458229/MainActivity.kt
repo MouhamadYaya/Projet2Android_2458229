@@ -1,4 +1,5 @@
 package com.example.projet2android_2458229
+
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -9,18 +10,14 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.*
 import com.example.projet2android_2458229.ui.theme.Projet2Android_2458229Theme
-
-
 
 sealed class Screen(
     val route: String,
@@ -33,7 +30,6 @@ sealed class Screen(
 
     companion object {
         val items = listOf(Home, Profile, Settings)
-
     }
 }
 
@@ -42,16 +38,32 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            Projet2Android_2458229Theme {
-                AppNavigation()
-            }
+            MyApp()
+        }
+    }
+}
+
+@Composable
+fun MyApp() {
+    var isDarkTheme by remember { mutableStateOf(false) }
+
+    val colorScheme = if (isDarkTheme) darkColorScheme() else lightColorScheme()
+
+    MaterialTheme(colorScheme = colorScheme) {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            AppNavigation(isDarkTheme = isDarkTheme, onThemeChange = { newTheme ->
+                isDarkTheme = newTheme
+            })
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppNavigation() {
+fun AppNavigation(isDarkTheme: Boolean, onThemeChange: (Boolean) -> Unit) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
@@ -59,7 +71,7 @@ fun AppNavigation() {
     Scaffold(
         topBar = { TopAppBar(title = { Text("Mon Application") }) },
         bottomBar = {
-            NavigationBar  {
+            NavigationBar {
                 Screen.items.forEach { screen ->
                     NavigationBarItem(
                         icon = { Icon(screen.icon, contentDescription = screen.title) },
@@ -77,10 +89,16 @@ fun AppNavigation() {
             }
         }
     ) { paddingValues ->
-        NavHost(navController, startDestination = Screen.Home.route, Modifier.padding(paddingValues)) {
+        NavHost(
+            navController = navController,
+            startDestination = Screen.Home.route,
+            modifier = Modifier.padding(paddingValues)
+        ) {
             composable(Screen.Home.route) { HomeScreen() }
             composable(Screen.Profile.route) { ProfileScreen() }
-            composable(Screen.Settings.route) { SettingsScreen() }
+            composable(Screen.Settings.route) {
+                SettingsScreenWithTheme(isDarkTheme, onThemeChange)
+            }
         }
     }
 }
@@ -112,23 +130,27 @@ fun ProfileScreen() {
 }
 
 @Composable
-fun SettingsScreen() {
+fun SettingsScreenWithTheme(isDarkTheme: Boolean, onThemeChange: (Boolean) -> Unit) {
     Column(
         modifier = Modifier.fillMaxSize().padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        horizontalAlignment = Alignment.Start,
+        verticalArrangement = Arrangement.Top
     ) {
         Icon(Icons.Default.Settings, contentDescription = null, modifier = Modifier.size(48.dp))
         Spacer(Modifier.height(16.dp))
         Text("Écran des paramètres")
+        Spacer(Modifier.height(16.dp))
+
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text("Mode sombre")
+            Spacer(Modifier.width(8.dp))
+            Switch(checked = isDarkTheme, onCheckedChange = onThemeChange)
+        }
     }
 }
 
-// Preview
 @Preview(showBackground = true)
 @Composable
 fun AppPreview() {
-    Projet2Android_2458229Theme {
-        HomeScreen()
-    }
+    MyApp()
 }
