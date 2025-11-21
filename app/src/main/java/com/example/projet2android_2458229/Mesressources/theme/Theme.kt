@@ -1,6 +1,5 @@
-package com.example.projet2android_2458229.ui.theme
+package com.example.projet2android_2458229.Mesressources.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme

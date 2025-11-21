@@ -17,7 +17,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.*
-import com.example.projet2android_2458229.ui.theme.Projet2Android_2458229Theme
 
 sealed class Screen(
     val route: String,
@@ -31,7 +30,7 @@ sealed class Screen(
     companion object {
         val items = listOf(Home, Profile, Settings)
     }
-}
+ }
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
