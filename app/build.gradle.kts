@@ -4,6 +4,10 @@ plugins {
     alias(libs.plugins.kotlin.compose)
 }
 
+dependencies {
+    implementation(libs.coil.compose)
+}
+
 android {
     namespace = "com.example.projet2android_2458229"
     compileSdk = 36

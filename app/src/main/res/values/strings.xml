@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">Projet2Android_2458229</string>
+    <string name="app_name">My App</string>
+    <string name="welcome_message">Welcome to My App!</string>
+    <string name="language_selection">Select a language</string>
 </resources>

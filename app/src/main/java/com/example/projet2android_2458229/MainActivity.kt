@@ -1,5 +1,10 @@
 package com.example.projet2android_2458229
 
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.dp
+import coil.compose.SubcomposeAsyncImage
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -17,20 +22,36 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.*
+import androidx.compose.foundation.layout.size
+import androidx.compose.runtime.Composable
+import coil.compose.AsyncImage
+
 
 sealed class Screen(
     val route: String,
     val title: String,
     val icon: ImageVector
 ) {
-    object Home : Screen("home", "Accueil", Icons.Default.Home)
-    object Profile : Screen("profile", "Profil", Icons.Default.Person)
-    object Settings : Screen("settings", "Paramètres", Icons.Default.Settings)
+    object Home : Screen(
+        route = "home",
+        title = "Accueil",
+        icon = Icons.Default.Home
+    )
+    object Profile : Screen(
+        route = "profile",
+        title = "Profil",
+        icon = Icons.Default.Person
+    )
+    object Settings : Screen(
+        route = "settings",
+        title = "Paramètres",
+        icon = Icons.Default.Settings
+    )
 
     companion object {
         val items = listOf(Home, Profile, Settings)
     }
- }
+}
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,6 +59,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MyApp()
+            ImageDistanteAvancee()
         }
     }
 }
@@ -45,7 +67,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MyApp() {
     var isDarkTheme by remember { mutableStateOf(false) }
-
     val colorScheme = if (isDarkTheme) darkColorScheme() else lightColorScheme()
 
     MaterialTheme(colorScheme = colorScheme) {
@@ -58,6 +79,33 @@ fun MyApp() {
             })
         }
     }
+}
+
+@Composable
+fun ImageDistanteAvancee() {
+    SubcomposeAsyncImage(
+        model = "https://picsum.photos/200",
+        contentDescription = "Description de l'image",
+        modifier = Modifier.size(200.dp),
+        contentScale = ContentScale.Fit,
+        loading = {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+        },
+        error = {
+            // Vous pouvez personnaliser l'affichage en cas d'erreur
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("Erreur de chargement")
+            }
+        }
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -151,5 +199,5 @@ fun SettingsScreenWithTheme(isDarkTheme: Boolean, onThemeChange: (Boolean) -> Un
 @Preview(showBackground = true)
 @Composable
 fun AppPreview() {
-    MyApp()
+    ImageDistanteAvancee()
 }
