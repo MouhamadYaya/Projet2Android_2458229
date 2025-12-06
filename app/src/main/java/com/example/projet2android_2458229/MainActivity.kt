@@ -9,7 +9,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.*
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
@@ -20,12 +21,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.*
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
+import com.example.projet2android_2458229.Mesressources.theme.ThemeProjet
 
 
 sealed class Screen(
@@ -68,9 +69,8 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MyApp() {
     var isDarkTheme by remember { mutableStateOf(false) }
-    val colorScheme = if (isDarkTheme) darkColorScheme() else lightColorScheme()
 
-    MaterialTheme(colorScheme = colorScheme) {
+    ThemeProjet(darkTheme = isDarkTheme) {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
@@ -80,6 +80,7 @@ fun MyApp() {
             })
         }
     }
+
 }
 
 @Composable
