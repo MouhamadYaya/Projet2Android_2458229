@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Mon App</string>
+    <string name="welcome_message">Bienvenue dans Mon App!</string>
+    <string name="language_selection">Sélectionner une langue</string>
+
+    <string name="home">Accueil</string>
+    <string name="profile">Profil</string>
+    <string name="settings">Paramètres</string>
+    <string name="add_book">Ajouter un livre</string>
+    <string name="dark_mode">Mode sombre</string>
+    <string name="collection">ma collection</string>
+</resources>

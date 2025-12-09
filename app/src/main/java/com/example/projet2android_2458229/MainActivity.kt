@@ -24,30 +24,31 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.*
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
-import coil.compose.AsyncImage
 import com.example.projet2android_2458229.Mesressources.theme.ThemeProjet
 
 
-sealed class Screen(
+sealed class ecran(
     val route: String,
-    val title: String,
-    val icon: ImageVector
+    val icon: ImageVector,
+    val titreRes: Int,
 ) {
-    object Home : Screen(
+    object Home : ecran(
         route = "home",
-        title = "Accueil",
+        titreRes = R.string.home,
         icon = Icons.Default.Home
     )
-    object Profile : Screen(
+    object Profile : ecran(
         route = "profile",
-        title = "Profil",
-        icon = Icons.Default.Person
+
+        titreRes = R.string.profile,
+        icon = Icons.Default.Person,
     )
-    object Settings : Screen(
+    object Settings : ecran(
         route = "settings",
-        title = "Paramètres",
-        icon = Icons.Default.Settings
+        titreRes = R.string.settings,
+        icon = Icons.Default.Settings,
     )
 
     companion object {
@@ -99,7 +100,6 @@ fun ImageDistanteAvancee() {
             }
         },
         error = {
-            // Vous pouvez personnaliser l'affichage en cas d'erreur
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
@@ -118,16 +118,16 @@ fun AppNavigation(isDarkTheme: Boolean, onThemeChange: (Boolean) -> Unit) {
     val currentRoute = navBackStackEntry?.destination?.route
 
     Scaffold(
-        topBar = { TopAppBar(title = { Text("Mon Application") }) },
+        topBar = { TopAppBar(title = { Text(stringResource(R.string.app_name)) }) },
         bottomBar = {
             NavigationBar {
-                Screen.items.forEach { screen ->
+                ecran.items.forEach { ecran ->
                     NavigationBarItem(
-                        icon = { Icon(screen.icon, contentDescription = screen.title) },
-                        label = { Text(screen.title) },
-                        selected = currentRoute == screen.route,
+                        icon = { Icon(ecran.icon, contentDescription =null) }, //contentDescription =  stringResource(ecran.titreRes)
+                        label = { Text(stringResource(ecran.titreRes))},
+                        selected = currentRoute == ecran.route,
                         onClick = {
-                            navController.navigate(screen.route) {
+                            navController.navigate(ecran.route) {
                                 popUpTo(navController.graph.startDestinationId) { saveState = true }
                                 launchSingleTop = true
                                 restoreState = true
@@ -140,14 +140,14 @@ fun AppNavigation(isDarkTheme: Boolean, onThemeChange: (Boolean) -> Unit) {
     ) { paddingValues ->
         NavHost(
             navController = navController,
-            startDestination = Screen.Home.route,
+            startDestination = ecran.Home.route,
             modifier = Modifier.padding(paddingValues)
         ) {
-            composable(Screen.Home.route) { HomeScreen() }
+            composable(ecran.Home.route) { EcranAccueil() }
             composable("collection") { CollectionScreen() }
             composable("addBook") { AddBookScreen() }
-            composable(Screen.Profile.route) { ProfileScreen() }
-            composable(Screen.Settings.route) {
+            composable(ecran.Profile.route) { ProfileScreen() }
+            composable(ecran.Settings.route) {
                 SettingsScreenWithTheme(isDarkTheme, onThemeChange)
             }
         }
@@ -155,7 +155,7 @@ fun AppNavigation(isDarkTheme: Boolean, onThemeChange: (Boolean) -> Unit) {
 }
 
 @Composable
-fun HomeScreen(navController: NavHostController = rememberNavController()) {
+fun EcranAccueil(navController: NavHostController = rememberNavController()) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -164,7 +164,7 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
     ) {
         Spacer(Modifier.height(20.dp))
         Text(
-            text = "Bibliothèque : accueil",
+            text = stringResource(R.string.home),
             style = MaterialTheme.typography.headlineMedium
         )
         Spacer(Modifier.height(40.dp))
@@ -185,7 +185,7 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
             ),
             shape = MaterialTheme.shapes.medium
         ) {
-            Text("Voir ma collection", style = MaterialTheme.typography.titleMedium)
+            Text(stringResource(R.string.collection), style = MaterialTheme.typography.titleMedium)
         }
         Spacer(Modifier.height(60.dp))
         Button(
@@ -198,7 +198,7 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
             ),
             shape = MaterialTheme.shapes.medium
         ) {
-            Text("Ajouter un livre", style = MaterialTheme.typography.titleMedium)
+            Text(stringResource(R.string.add_book))
         }
     }
 }
