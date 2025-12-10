@@ -11,6 +11,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import com.example.projet2android_2458229.ui.theme.AppTypography
+
+
 
 private val lightScheme = lightColorScheme(
     primary = primaryLight,
@@ -270,7 +273,11 @@ fun ThemeProjet(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
+        typography = AppTypography,
         content = content
+
     )
+    
 }
+
+
