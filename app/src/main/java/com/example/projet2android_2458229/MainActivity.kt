@@ -50,12 +50,14 @@ sealed class ecran(
         titreRes = R.string.home,
         icon = Icons.Default.Home
     )
+
     object Profile : ecran(
         route = "profile",
 
         titreRes = R.string.profile,
         icon = Icons.Default.Person,
     )
+
     object Settings : ecran(
         route = "settings",
         titreRes = R.string.settings,
@@ -72,27 +74,20 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            MyApp()
-
+            Bibliotheque()
         }
     }
 }
 
 @Composable
-fun MyApp() {
+fun Bibliotheque() {
     var isDarkTheme by remember { mutableStateOf(false) }
-
     ThemeProjet(darkTheme = isDarkTheme) {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            AppNavigation(isDarkTheme = isDarkTheme, onThemeChange = { newTheme ->
-                isDarkTheme = newTheme
-            })
-        }
+        AppNavigation(
+            isDarkTheme = isDarkTheme,
+            onThemeChange = { isDarkTheme = it }
+        )
     }
-
 }
 
 @Composable
@@ -134,8 +129,13 @@ fun AppNavigation(isDarkTheme: Boolean, onThemeChange: (Boolean) -> Unit) {
             NavigationBar {
                 ecran.items.forEach { ecran ->
                     NavigationBarItem(
-                        icon = { Icon(ecran.icon, contentDescription =null) }, //contentDescription =  stringResource(ecran.titreRes)
-                        label = { Text(stringResource(ecran.titreRes))},
+                        icon = {
+                            Icon(
+                                ecran.icon,
+                                contentDescription = null
+                            )
+                        }, //contentDescription =  stringResource(ecran.titreRes)
+                        label = { Text(stringResource(ecran.titreRes)) },
                         selected = currentRoute == ecran.route,
                         onClick = {
                             navController.navigate(ecran.route) {
@@ -155,11 +155,11 @@ fun AppNavigation(isDarkTheme: Boolean, onThemeChange: (Boolean) -> Unit) {
             modifier = Modifier.padding(paddingValues)
         ) {
             composable(ecran.Home.route) { EcranAccueil(navController = navController) }
-            composable("collection") { CollectionScreen() }
-            composable("addBook") { EcranAjoutDeLivre() }
-            composable(ecran.Profile.route) { ProfileScreen() }
+            composable("collection") { EcranDeCollection(navController = navController) }
+            composable("ajoutlivre") { EcranAjoutDeLivre() }
+            composable(ecran.Profile.route) { EcranDeProfil() }
             composable(ecran.Settings.route) {
-                SettingsScreenWithTheme(isDarkTheme, onThemeChange)
+                EcranParametreAvecTheme(isDarkTheme, onThemeChange)
             }
         }
     }
@@ -181,7 +181,8 @@ fun EcranAccueil(navController: NavHostController) {
         Spacer(Modifier.height(40.dp))
         Text(
             text = "Que voulez-vous faire?",
-            style = MaterialTheme.typography.bodyLarge
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onBackground
         )
 
         Spacer(Modifier.height(60.dp))
@@ -213,18 +214,30 @@ fun EcranAccueil(navController: NavHostController) {
     }
 }
 
+
 @Composable
-fun CollectionScreen() {
+fun EcranDeCollection(navController: NavHostController) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        modifier = Modifier.fillMaxSize()
     ) {
-        Text("Ma collection")
+        Text(
+            stringResource(R.string.collection), modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth()
+        )
+        LivreListWithSearch(
+            modifier = Modifier.weight(1f)
+        )
+        Button(
+            onClick = { navController.navigate("ajoutlivre") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp)
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+        ) {
+            Text(stringResource(R.string.add_book))
+        }
     }
-    LivreListWithSearch()
 }
 
 @Composable
@@ -241,22 +254,42 @@ fun EcranAjoutDeLivre() {
 }
 
 @Composable
-fun ProfileScreen() {
+fun EcranDeProfil() {
     Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Icon(Icons.Default.Person, contentDescription = null, modifier = Modifier.size(48.dp))
-        Spacer(Modifier.height(16.dp))
-        Text("Écran de profil")
+        Text(
+            text = "Profil utilisateur",
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Bold
+        )
+
+        Spacer(Modifier.height(12.dp))
+
+        Text(
+            text = "Accès : Consultation et gestion de la collection",
+            style = MaterialTheme.typography.bodyLarge
+        )
+
+        Spacer(Modifier.height(12.dp))
+
+        Text(
+            text = "Statut : Connecté",
+            style = MaterialTheme.typography.bodyLarge
+        )
     }
 }
 
+
 @Composable
-fun SettingsScreenWithTheme(isDarkTheme: Boolean, onThemeChange: (Boolean) -> Unit) {
+fun EcranParametreAvecTheme(isDarkTheme: Boolean, onThemeChange: (Boolean) -> Unit) {
     Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(18.dp),
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Top
     ) {
@@ -270,9 +303,9 @@ fun SettingsScreenWithTheme(isDarkTheme: Boolean, onThemeChange: (Boolean) -> Un
             Spacer(Modifier.width(8.dp))
             Switch(checked = isDarkTheme, onCheckedChange = onThemeChange)
         }
+        ImageDistanteAvancee()
     }
 
-    ImageDistanteAvancee()
 }
 
 @Composable
@@ -282,7 +315,7 @@ fun LivreListWithSearch(modifier: Modifier = Modifier) {
 
     Column(modifier = modifier) {
 
-        Column(modifier = Modifier.padding(top = 20.dp, bottom = 20.dp)) {
+        Column(modifier = Modifier.padding(top = 15.dp, bottom = 15.dp)) {
 
             TextField(
                 value = searchTitre,
@@ -290,7 +323,7 @@ fun LivreListWithSearch(modifier: Modifier = Modifier) {
                 onValueChange = { searchTitre = it },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 20.dp)
+                    .padding(horizontal = 15.dp)
             )
 
             TextField(
@@ -299,7 +332,7 @@ fun LivreListWithSearch(modifier: Modifier = Modifier) {
                 onValueChange = { searchAuteur = it },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 20.dp)
+                    .padding(horizontal = 15.dp)
             )
         }
 
@@ -311,44 +344,43 @@ fun LivreListWithSearch(modifier: Modifier = Modifier) {
     }
 }
 
-    @Composable
-    fun LivreCard(livre: Livre, modifier: Modifier = Modifier) {
-        var isExpanded by rememberSaveable { mutableStateOf(false) }
+@Composable
+fun LivreCard(livre: Livre, modifier: Modifier = Modifier) {
+    var isExpanded by rememberSaveable { mutableStateOf(false) }
 
-        Card(
-            border = BorderStroke(2.dp, colorResource(R.color.purple_500)),
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(16.dp)
+    Card(
+        border = BorderStroke(1.dp, colorResource(R.color.purple_500)),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .clickable { isExpanded = !isExpanded }
+    ) {
 
-                .clickable { isExpanded = !isExpanded }
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(8.dp)
         ) {
+            Image(
+                painter = painterResource(id = livre.imageResource),
+                contentDescription = livre.titre,
+                modifier = Modifier.size(50.dp)
+            )
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(16.dp)
-            ) {
-                Image(
-                    painter = painterResource(id = livre.imageResource),
-                    contentDescription = livre.titre,
-                    modifier = Modifier.size(90.dp)
-                )
-
-                Column(modifier = Modifier.padding(start = 16.dp)) {
-                    Text(text = livre.titre, fontWeight = FontWeight.Bold)
-                    Text(text = livre.auteur)
-                    Text(text = "Type: ${livre.type}")
-                }
-            }
-
-            if (isExpanded) {
-                Text(
-                    text = "ID du livre : ${livre.id}",
-                    modifier = Modifier.padding(16.dp)
-                )
+            Column(modifier = Modifier.padding(start = 12.dp)) {
+                Text(text = livre.titre, fontWeight = FontWeight.Bold)
+                Text(text = livre.auteur)
+                Text(text = "Type: ${livre.type}")
             }
         }
+
+        if (isExpanded) {
+            Text(
+                text = "ID du livre : ${livre.id}",
+                modifier = Modifier.padding(16.dp)
+            )
+        }
     }
+}
 
 
 /**
@@ -360,35 +392,23 @@ ImageDistanteAvancee()
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun PreviewCollectionScreen() {
-    CollectionScreen()
+CollectionScreen()
 }
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun PreviewLivreListWithSearch() {
-    LivreListWithSearch()
+LivreListWithSearch()
 }
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun PreviewAddBookScreen() {
-    EcranAjoutDeLivre()
+EcranAjoutDeLivre()
 }
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewLivreCard() {
-    LivreCard(
-        livre = Livre(
-            id = 1,
-            titre = "Harry Potter",
-            auteur = "J.K. Rowling",
-            type = "Roman",
-            imageResource = R.drawable.ic_launcher_background
-        )
-    )
-}
-*/
+
+ */
 
 
 

@@ -25,7 +25,7 @@ fun getSampleLivre(): List<Livre> {
         Livre(
             id = 1,
             titre = "Harry Potter à l'école des sorciers",
-            auteur = "J. K. Rowling",
+            auteur = "Francois",
             type = "Roman",
             annee = 1997,
             imageResource = R.drawable.ic_launcher_background,
@@ -34,7 +34,7 @@ fun getSampleLivre(): List<Livre> {
         Livre(
             id = 2,
             titre = "Le Seigneur des Anneaux",
-            auteur = "J. R. R. Tolkien",
+            auteur = "Tolkien",
             type = "Roman",
             annee = 1954,
 
@@ -60,6 +60,17 @@ fun getSampleLivre(): List<Livre> {
 
             imageResource = R.drawable.ic_launcher_background,
             tags = listOf("philosophie", "classique")
+        ),
+        Livre(
+            id = 5,
+            titre = "L'homme riche",
+            auteur = "papy",
+            type = "Conte",
+            annee = 1943,
+
+            imageResource = R.drawable.ic_launcher_background,
+            tags = listOf("philosophie", "classique")
         )
+
     )
 }
