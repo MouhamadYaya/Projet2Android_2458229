@@ -30,6 +30,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -38,6 +39,9 @@ import androidx.navigation.NavHostController
 import com.example.projet2android_2458229.Mesressources.theme.ThemeProjet
 import com.example.projet2android_2458229.data.Livre
 import com.example.projet2android_2458229.data.getLivre
+import com.example.projet2android_2458229.data.getSampleLivre
+import com.example.projet2android_2458229.data.readLivreFromFile
+import com.example.projet2android_2458229.data.saveToFile
 
 
 sealed class ecran(
@@ -235,7 +239,8 @@ fun EcranDeCollection(navController: NavHostController) {
                 .height(56.dp)
                 .padding(horizontal = 16.dp, vertical = 8.dp)
         ) {
-            Text(stringResource(R.string.add_book))
+            Text(stringResource(R.string.add_book),
+                color = MaterialTheme.colorScheme.onBackground)
         }
     }
 }
@@ -283,7 +288,6 @@ fun EcranDeProfil() {
     }
 }
 
-
 @Composable
 fun EcranParametreAvecTheme(isDarkTheme: Boolean, onThemeChange: (Boolean) -> Unit) {
     Column(
@@ -295,11 +299,13 @@ fun EcranParametreAvecTheme(isDarkTheme: Boolean, onThemeChange: (Boolean) -> Un
     ) {
         Icon(Icons.Default.Settings, contentDescription = null, modifier = Modifier.size(48.dp))
         Spacer(Modifier.height(16.dp))
-        Text("Écran des paramètres")
+        Text("Écran des paramètres",
+            color = MaterialTheme.colorScheme.onBackground)
         Spacer(Modifier.height(16.dp))
 
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text("Mode sombre")
+            Text("Mode sombre",
+                color = MaterialTheme.colorScheme.onBackground)
             Spacer(Modifier.width(8.dp))
             Switch(checked = isDarkTheme, onCheckedChange = onThemeChange)
         }
@@ -336,6 +342,12 @@ fun LivreListWithSearch(modifier: Modifier = Modifier) {
             )
         }
 
+        val context = LocalContext.current
+        var playerList = context.readLivreFromFile(stringResource(R.string.livre_json))
+        if (playerList.isEmpty()) {
+            playerList = getSampleLivre()
+            context.saveToFile(playerList, stringResource(R.string.livre_json))
+        }
         LazyColumn(modifier = Modifier.fillMaxSize()) {
             items(getLivre(searchTitre, searchAuteur)) { livre ->
                 LivreCard(livre)
