@@ -18,6 +18,17 @@ data class Livre(
     val tags: List<String> = emptyList()
 )
 
+fun filterLivres(
+    source: List<Livre>,
+    titre: String? = null,
+    auteur: String? = null,
+): List<Livre> =
+    source
+        .filter { livre ->
+            (titre == null || livre.titre.lowercase().contains(titre.lowercase())) &&
+                    (auteur == null || livre.auteur.lowercase().contains(auteur.lowercase()))
+
+        }
 fun getLivre(titre: String? = null, auteur: String? = null): List<Livre> =
     getSampleLivre()
         .filter { livre ->

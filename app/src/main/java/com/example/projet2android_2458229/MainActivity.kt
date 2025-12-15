@@ -38,6 +38,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavHostController
 import com.example.projet2android_2458229.Mesressources.theme.ThemeProjet
 import com.example.projet2android_2458229.data.Livre
+import com.example.projet2android_2458229.data.filterLivres
 import com.example.projet2android_2458229.data.getLivre
 import com.example.projet2android_2458229.data.getSampleLivre
 import com.example.projet2android_2458229.data.readLivreFromFile
@@ -88,8 +89,9 @@ fun Bibliotheque() {
     var isDarkTheme by remember { mutableStateOf(false) }
     ThemeProjet(darkTheme = isDarkTheme) {
         AppNavigation(
-            isDarkTheme = isDarkTheme,
-            onThemeChange = { isDarkTheme = it }
+            isDarkTheme = isDarkTheme, onThemeChange = {
+                isDarkTheme = it
+            }
         )
     }
 }
@@ -160,7 +162,7 @@ fun AppNavigation(isDarkTheme: Boolean, onThemeChange: (Boolean) -> Unit) {
         ) {
             composable(ecran.Home.route) { EcranAccueil(navController = navController) }
             composable("collection") { EcranDeCollection(navController = navController) }
-            composable("ajoutlivre") { EcranAjoutDeLivre() }
+            composable("ajoutlivre") { EcranAjoutDeLivre(navController = navController) }
             composable(ecran.Profile.route) { EcranDeProfil() }
             composable(ecran.Settings.route) {
                 EcranParametreAvecTheme(isDarkTheme, onThemeChange)
@@ -195,22 +197,16 @@ fun EcranAccueil(navController: NavHostController) {
             modifier = Modifier
                 .fillMaxWidth(0.8f)
                 .height(80.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer
-            ),
             shape = MaterialTheme.shapes.medium
         ) {
             Text(stringResource(R.string.collection), style = MaterialTheme.typography.titleMedium)
         }
         Spacer(Modifier.height(60.dp))
         Button(
-            onClick = { navController.navigate("addBook") },
+            onClick = { navController.navigate("ajoutlivre") },
             modifier = Modifier
                 .fillMaxWidth(0.8f)
                 .height(80.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.secondaryContainer
-            ),
             shape = MaterialTheme.shapes.medium
         ) {
             Text(stringResource(R.string.add_book))
@@ -239,14 +235,22 @@ fun EcranDeCollection(navController: NavHostController) {
                 .height(56.dp)
                 .padding(horizontal = 16.dp, vertical = 8.dp)
         ) {
-            Text(stringResource(R.string.add_book),
-                color = MaterialTheme.colorScheme.onBackground)
+            Text(
+                stringResource(R.string.add_book),
+                color = MaterialTheme.colorScheme.onBackground
+            )
         }
     }
 }
 
 @Composable
-fun EcranAjoutDeLivre() {
+fun EcranAjoutDeLivre(navController: NavHostController) {
+    var titre by rememberSaveable { mutableStateOf("") }
+    var auteur by rememberSaveable { mutableStateOf("") }
+    var TypeDeLivre by rememberSaveable { mutableStateOf("") }
+    val context = LocalContext.current
+    val fichierJson = stringResource(R.string.livre_json)
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -254,7 +258,66 @@ fun EcranAjoutDeLivre() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text("Ajouter un livre")
+        Text(
+            text = "Ajouter un livre",
+            style = MaterialTheme.typography.headlineMedium,
+        )
+        Spacer(Modifier.height(32.dp))
+
+        TextField(
+            value = titre,
+            onValueChange = {
+                titre = it
+            },
+            label = {
+                Text("Titre du livre")
+            },
+            modifier = Modifier.fillMaxWidth(),
+        )
+
+        Spacer(Modifier.height(16.dp))
+
+        TextField(
+            value = auteur,
+            onValueChange = {
+                auteur = it
+            },
+            label = {
+                Text("Auteur")
+            },
+            modifier = Modifier.fillMaxWidth(),
+        )
+
+        Spacer(Modifier.height(32.dp))
+
+        Button(
+            onClick = {
+                if (!titre.isEmpty() && !auteur.isEmpty()) {
+                    val livreList = context.readLivreFromFile(fichierJson).toMutableList()
+                    val nouveauLivre = Livre(
+                        id = livreList.size + 1,
+                        titre = titre,
+                        auteur = auteur,
+                        type = "Typedefaut",
+                        imageResource = R.drawable.ic_launcher_background
+                    )
+
+                    livreList.add(nouveauLivre)
+
+                    context.saveToFile(livreList, fichierJson)
+                    navController.popBackStack()
+                }
+            },
+
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp),
+
+            enabled = !titre.isEmpty() && !auteur.isEmpty()
+        ) {
+            Text("Ajouter le livre")
+        }
+
     }
 }
 
@@ -299,13 +362,17 @@ fun EcranParametreAvecTheme(isDarkTheme: Boolean, onThemeChange: (Boolean) -> Un
     ) {
         Icon(Icons.Default.Settings, contentDescription = null, modifier = Modifier.size(48.dp))
         Spacer(Modifier.height(16.dp))
-        Text("Écran des paramètres",
-            color = MaterialTheme.colorScheme.onBackground)
+        Text(
+            "Écran des paramètres",
+            color = MaterialTheme.colorScheme.onBackground
+        )
         Spacer(Modifier.height(16.dp))
 
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text("Mode sombre",
-                color = MaterialTheme.colorScheme.onBackground)
+            Text(
+                "Mode sombre",
+                color = MaterialTheme.colorScheme.onBackground
+            )
             Spacer(Modifier.width(8.dp))
             Switch(checked = isDarkTheme, onCheckedChange = onThemeChange)
         }
@@ -313,14 +380,12 @@ fun EcranParametreAvecTheme(isDarkTheme: Boolean, onThemeChange: (Boolean) -> Un
     }
 
 }
-
 @Composable
 fun LivreListWithSearch(modifier: Modifier = Modifier) {
     var searchTitre by rememberSaveable { mutableStateOf("") }
     var searchAuteur by rememberSaveable { mutableStateOf("") }
 
     Column(modifier = modifier) {
-
         Column(modifier = Modifier.padding(top = 15.dp, bottom = 15.dp)) {
 
             TextField(
@@ -341,15 +406,14 @@ fun LivreListWithSearch(modifier: Modifier = Modifier) {
                     .padding(horizontal = 15.dp)
             )
         }
-
         val context = LocalContext.current
-        var playerList = context.readLivreFromFile(stringResource(R.string.livre_json))
-        if (playerList.isEmpty()) {
-            playerList = getSampleLivre()
-            context.saveToFile(playerList, stringResource(R.string.livre_json))
+        var LivreList = context.readLivreFromFile(stringResource(R.string.livre_json))
+        if (LivreList.isEmpty()) {
+            LivreList = getSampleLivre()
+            context.saveToFile(LivreList, stringResource(R.string.livre_json))
         }
         LazyColumn(modifier = Modifier.fillMaxSize()) {
-            items(getLivre(searchTitre, searchAuteur)) { livre ->
+            items(filterLivres(LivreList, searchTitre, searchAuteur)) { livre ->
                 LivreCard(livre)
             }
         }
