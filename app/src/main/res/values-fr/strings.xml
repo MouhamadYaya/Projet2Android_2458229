@@ -12,7 +12,6 @@
     <string name="add_book_screen_title">Ajouter un livre</string>
     <string name="profile_title">Profil utilisateur</string>
     <string name="profile_status">Statut : Connecté</string>
-    <string name="settings_title">Écran des paramètres</string>
     <string name="dark_mode">Mode sombre</string>
     <string name="book_type">Type</string>
     <string name="livre_json">livres.json</string>

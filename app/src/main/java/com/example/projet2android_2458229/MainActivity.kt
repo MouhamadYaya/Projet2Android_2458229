@@ -46,7 +46,10 @@ import com.example.projet2android_2458229.data.getSampleLivre
 import com.example.projet2android_2458229.data.readLivreFromFile
 import com.example.projet2android_2458229.data.saveToFile
 
-
+/**
+ * Représente les différents écrans principaux de l'application.
+ * Cette classe est utilisée pour configurer la barre de navigation
+ */
 sealed class ecran(
     val route: String,
     val icon: ImageVector,
@@ -76,6 +79,9 @@ sealed class ecran(
     }
 }
 
+/**
+ * Activité principale de l'application.
+ */
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,6 +92,10 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+/**
+ * Fonction composable racine de l'application.
+ *  gère l'état du thème (clair ou sombre) et applique le theme global
+ */
 @Composable
 fun Bibliotheque() {
     var isDarkTheme by remember { mutableStateOf(false) }
@@ -98,6 +108,9 @@ fun Bibliotheque() {
     }
 }
 
+/**
+ * Affiche une image distante chargée depuis une URL.
+ */
 @Composable
 fun ImageDistanteAvancee() {
     SubcomposeAsyncImage(
@@ -124,6 +137,12 @@ fun ImageDistanteAvancee() {
     )
 }
 
+/**
+ * Gère la navigation de l'application.
+ * @param isDarkTheme indique si le thème sombre est activé
+ * @param onThemeChange permettant de changer le thème
+ */
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppNavigation(isDarkTheme: Boolean, onThemeChange: (Boolean) -> Unit) {
@@ -132,6 +151,7 @@ fun AppNavigation(isDarkTheme: Boolean, onThemeChange: (Boolean) -> Unit) {
     val currentRoute = navBackStackEntry?.destination?.route
 
     Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = { TopAppBar(title = { Text(stringResource(R.string.app_name)) }) },
         bottomBar = {
             NavigationBar {
@@ -172,6 +192,11 @@ fun AppNavigation(isDarkTheme: Boolean, onThemeChange: (Boolean) -> Unit) {
         }
     }
 }
+
+/**
+ * Écran d'accueil de l'application.
+ * @param navController contrôleur de navigation
+ */
 
 @Composable
 fun EcranAccueil(navController: NavHostController) {
@@ -281,7 +306,10 @@ fun EcranAccueil(navController: NavHostController) {
     }
 }
 
-
+/**
+ * Écran affichant la collection de livres.
+ * @param navController contrôleur de navigation
+ */
 @Composable
 fun EcranDeCollection(navController: NavHostController) {
     Column(
@@ -309,6 +337,11 @@ fun EcranDeCollection(navController: NavHostController) {
         }
     }
 }
+
+/**
+ * Écran permettant d'ajouter un nouveau livre à ma collection.
+ * @param navController contrôleur de navigation
+ */
 
 @Composable
 fun EcranAjoutDeLivre(navController: NavHostController) {
@@ -399,7 +432,9 @@ fun EcranAjoutDeLivre(navController: NavHostController) {
                     titre = it
                 },
                 label = {
-                    Text("Titre du livre")
+                    Text(
+                        stringResource(R.string.add_book_title)
+                    )
                 },
                 modifier = Modifier.fillMaxWidth(),
             )
@@ -412,7 +447,9 @@ fun EcranAjoutDeLivre(navController: NavHostController) {
                     auteur = it
                 },
                 label = {
-                    Text("Auteur")
+                    Text(
+                        stringResource(R.string.add_book_author)
+                    )
                 },
                 modifier = Modifier.fillMaxWidth(),
             )
@@ -444,12 +481,17 @@ fun EcranAjoutDeLivre(navController: NavHostController) {
 
                 enabled = !titre.isEmpty() && !auteur.isEmpty()
             ) {
-                Text("Ajouter le livre")
+                Text(stringResource(R.string.add_book))
             }
 
         }
     }
 }
+
+/**
+ * profil de l'utilisateur.
+ * Affiche des informations simples sur lutilisateur.
+ */
 
 @Composable
 fun EcranDeProfil() {
@@ -474,20 +516,22 @@ fun EcranDeProfil() {
     }
 }
 
+/**
+ * @param isDarkTheme état actuel du thème
+ * @param onThemeChange callback pour modifier le thème
+ */
 @Composable
 fun EcranParametreAvecTheme(isDarkTheme: Boolean, onThemeChange: (Boolean) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(18.dp),
-        horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Top
     ) {
         Icon(Icons.Default.Settings, contentDescription = null, modifier = Modifier.size(48.dp))
         Spacer(Modifier.height(16.dp))
         Text(
-            "Écran des paramètres",
-            color = MaterialTheme.colorScheme.onBackground
+            stringResource(R.string.settings)
         )
         Spacer(Modifier.height(16.dp))
 
@@ -503,6 +547,11 @@ fun EcranParametreAvecTheme(isDarkTheme: Boolean, onThemeChange: (Boolean) -> Un
     }
 
 }
+
+/**
+ * Affiche une liste de livres avec les champs de recherche.
+ * @param modifier modificateur Compose optionnel
+ */
 
 @Composable
 fun LivreListWithSearch(modifier: Modifier = Modifier) {
@@ -544,6 +593,12 @@ fun LivreListWithSearch(modifier: Modifier = Modifier) {
     }
 }
 
+/**
+ * Affiche une carte représentant un livre.
+ * @param livre livre à afficher
+ * @param modifier modificateur Compose optionnel
+ */
+
 @Composable
 fun LivreCard(livre: Livre, modifier: Modifier = Modifier) {
     var isExpanded by rememberSaveable { mutableStateOf(false) }
@@ -582,19 +637,17 @@ fun LivreCard(livre: Livre, modifier: Modifier = Modifier) {
     }
 }
 
-/**
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun PreviewCollectionScreen() {
-CollectionScreen()
+    EcranDeProfil()
 }
-
+/**
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun PreviewAddBookScreen() {
 EcranAjoutDeLivre()
 }
-
  */
 
 
