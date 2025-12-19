@@ -1,5 +1,6 @@
 package com.example.projet2android_2458229
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.ui.layout.ContentScale
@@ -30,6 +31,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -173,46 +175,108 @@ fun AppNavigation(isDarkTheme: Boolean, onThemeChange: (Boolean) -> Unit) {
 
 @Composable
 fun EcranAccueil(navController: NavHostController) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Spacer(Modifier.height(20.dp))
-        Text(
-            text = stringResource(R.string.home),
-            style = MaterialTheme.typography.headlineMedium
-        )
-        Spacer(Modifier.height(40.dp))
-        Text(
-            stringResource(R.string.what_do_you_want),
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onBackground
-        )
+    val orientation = LocalConfiguration.current.orientation
 
-
-        Spacer(modifier = Modifier.weight(1f))
-
-        Button(
-            onClick = { navController.navigate("collection") },
+    if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        Column(
             modifier = Modifier
-                .fillMaxWidth(0.8f)
-                .height(80.dp),
-            shape = MaterialTheme.shapes.medium
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(stringResource(R.string.collection), style = MaterialTheme.typography.titleMedium)
+            Spacer(Modifier.height(16.dp))
+
+            Text(
+                text = stringResource(R.string.home),
+                style = MaterialTheme.typography.headlineMedium
+            )
+
+            Spacer(Modifier.height(14.dp))
+
+            Text(
+                text = stringResource(R.string.what_do_you_want),
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+
+            Spacer(Modifier.height(25.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(22.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Button(
+                    onClick = { navController.navigate("collection") },
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(45.dp),
+                    shape = MaterialTheme.shapes.medium
+                ) {
+                    Text(
+                        stringResource(R.string.collection),
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
+
+                Button(
+                    onClick = { navController.navigate("ajoutlivre") },
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(45.dp),
+                    shape = MaterialTheme.shapes.medium
+                ) {
+                    Text(
+                        stringResource(R.string.add_book),
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
+            }
         }
-        Spacer(modifier = Modifier.weight(1f))
-
-        Button(
-            onClick = { navController.navigate("ajoutlivre") },
+    } else {
+        Column(
             modifier = Modifier
-                .fillMaxWidth(0.8f)
-                .height(80.dp),
-            shape = MaterialTheme.shapes.medium
+                .fillMaxSize()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(stringResource(R.string.add_book))
+            Spacer(Modifier.height(20.dp))
+            Text(
+                text = stringResource(R.string.home),
+                style = MaterialTheme.typography.headlineMedium
+            )
+            Spacer(Modifier.height(40.dp))
+            Text(
+                stringResource(R.string.what_do_you_want),
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            Button(
+                onClick = { navController.navigate("collection") },
+                modifier = Modifier
+                    .fillMaxWidth(0.8f)
+                    .height(80.dp),
+                shape = MaterialTheme.shapes.medium
+            ) {
+                Text(
+                    stringResource(R.string.collection),
+                    style = MaterialTheme.typography.titleMedium
+                )
+            }
+            Spacer(modifier = Modifier.weight(1f))
+
+            Button(
+                onClick = { navController.navigate("ajoutlivre") },
+                modifier = Modifier
+                    .fillMaxWidth(0.8f)
+                    .height(80.dp),
+                shape = MaterialTheme.shapes.medium
+            ) {
+                Text(stringResource(R.string.add_book))
+            }
         }
     }
 }
@@ -253,75 +317,137 @@ fun EcranAjoutDeLivre(navController: NavHostController) {
     var TypeDeLivre by rememberSaveable { mutableStateOf("") }
     val context = LocalContext.current
     val fichierJson = stringResource(R.string.livre_json)
+    val orientation = LocalConfiguration.current.orientation
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(
-            stringResource(R.string.add_book),
-            style = MaterialTheme.typography.headlineMedium
-        )
-
-        Spacer(Modifier.height(32.dp))
-
-        TextField(
-            value = titre,
-            onValueChange = {
-                titre = it
-            },
-            label = {
-                Text("Titre du livre")
-            },
-            modifier = Modifier.fillMaxWidth(),
-        )
-
-        Spacer(Modifier.height(16.dp))
-
-        TextField(
-            value = auteur,
-            onValueChange = {
-                auteur = it
-            },
-            label = {
-                Text("Auteur")
-            },
-            modifier = Modifier.fillMaxWidth(),
-        )
-
-        Spacer(Modifier.height(32.dp))
-
-        Button(
-            onClick = {
-                if (!titre.isEmpty() && !auteur.isEmpty()) {
-                    val livreList = context.readLivreFromFile(fichierJson).toMutableList()
-                    val nouveauLivre = Livre(
-                        id = livreList.size + 1,
-                        titre = titre,
-                        auteur = auteur,
-                        type = "Typedefaut",
-                        imageResource = R.drawable.ic_launcher_background
-                    )
-
-                    livreList.add(nouveauLivre)
-
-                    context.saveToFile(livreList, fichierJson)
-                    navController.popBackStack()
-                }
-            },
-
+    if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp),
-
-            enabled = !titre.isEmpty() && !auteur.isEmpty()
+                .fillMaxSize()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text("Ajouter le livre")
-        }
+            Column(
+                modifier = Modifier.weight(1f),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                TextField(
+                    value = titre,
+                    onValueChange = {
+                        titre = it
+                                    },
+                    label = { Text(stringResource(R.string.add_book_title)) },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(Modifier.height(5.dp))
 
+                TextField(
+                    value = auteur,
+                    onValueChange = { auteur = it },
+                    label = { Text(stringResource(R.string.add_book_author)) },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.Center
+            ) {
+                Button(
+                    onClick = {
+                        if (titre.isNotEmpty() && auteur.isNotEmpty()) {
+                            val livreList = context.readLivreFromFile(fichierJson).toMutableList()
+                            livreList.add(
+                                Livre(
+                                    id = livreList.size + 1,
+                                    titre = titre,
+                                    auteur = auteur,
+                                    type = "Typedefaut",
+                                    imageResource = R.drawable.ic_launcher_background
+                                )
+                            )
+                            context.saveToFile(livreList, fichierJson)
+                            navController.popBackStack()
+                        }
+                    },
+                    enabled = titre.isNotEmpty() && auteur.isNotEmpty(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(35.dp)
+                ) {
+                    Text(stringResource(R.string.add_book))
+                }
+            }
+        }
+    } else {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(
+                stringResource(R.string.add_book),
+                style = MaterialTheme.typography.headlineMedium
+            )
+
+            Spacer(Modifier.height(32.dp))
+
+            TextField(
+                value = titre,
+                onValueChange = {
+                    titre = it
+                },
+                label = {
+                    Text("Titre du livre")
+                },
+                modifier = Modifier.fillMaxWidth(),
+            )
+
+            Spacer(Modifier.height(16.dp))
+
+            TextField(
+                value = auteur,
+                onValueChange = {
+                    auteur = it
+                },
+                label = {
+                    Text("Auteur")
+                },
+                modifier = Modifier.fillMaxWidth(),
+            )
+
+            Spacer(Modifier.height(32.dp))
+
+            Button(
+                onClick = {
+                    if (!titre.isEmpty() && !auteur.isEmpty()) {
+                        val livreList = context.readLivreFromFile(fichierJson).toMutableList()
+                        val nouveauLivre = Livre(
+                            id = livreList.size + 1,
+                            titre = titre,
+                            auteur = auteur,
+                            type = "Typedefaut",
+                            imageResource = R.drawable.ic_launcher_background
+                        )
+
+                        livreList.add(nouveauLivre)
+
+                        context.saveToFile(livreList, fichierJson)
+                        navController.popBackStack()
+                    }
+                },
+
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
+
+                enabled = !titre.isEmpty() && !auteur.isEmpty()
+            ) {
+                Text("Ajouter le livre")
+            }
+
+        }
     }
 }
 
@@ -367,8 +493,7 @@ fun EcranParametreAvecTheme(isDarkTheme: Boolean, onThemeChange: (Boolean) -> Un
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
-                stringResource(R.string.dark_mode),
-                color = MaterialTheme.colorScheme.onBackground
+                stringResource(R.string.dark_mode)
             )
 
             Spacer(Modifier.width(8.dp))
@@ -385,7 +510,7 @@ fun LivreListWithSearch(modifier: Modifier = Modifier) {
     var searchAuteur by rememberSaveable { mutableStateOf("") }
 
     Column(modifier = modifier) {
-        Column(modifier = Modifier.padding(top = 15.dp, bottom = 15.dp)) {
+        Column(modifier = Modifier.padding(top = 16.dp, bottom = 16.dp)) {
 
             TextField(
                 value = searchTitre,
@@ -393,7 +518,7 @@ fun LivreListWithSearch(modifier: Modifier = Modifier) {
                 onValueChange = { searchTitre = it },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 15.dp)
+                    .padding(horizontal = 18.dp)
             )
 
             TextField(
