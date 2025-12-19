@@ -140,7 +140,7 @@ fun AppNavigation(isDarkTheme: Boolean, onThemeChange: (Boolean) -> Unit) {
                                 ecran.icon,
                                 contentDescription = null
                             )
-                        }, //contentDescription =  stringResource(ecran.titreRes)
+                        },
                         label = { Text(stringResource(ecran.titreRes)) },
                         selected = currentRoute == ecran.route,
                         onClick = {
@@ -186,12 +186,14 @@ fun EcranAccueil(navController: NavHostController) {
         )
         Spacer(Modifier.height(40.dp))
         Text(
-            text = "Que voulez-vous faire?",
+            stringResource(R.string.what_do_you_want),
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onBackground
         )
 
-        Spacer(Modifier.height(60.dp))
+
+        Spacer(modifier = Modifier.weight(1f))
+
         Button(
             onClick = { navController.navigate("collection") },
             modifier = Modifier
@@ -201,7 +203,8 @@ fun EcranAccueil(navController: NavHostController) {
         ) {
             Text(stringResource(R.string.collection), style = MaterialTheme.typography.titleMedium)
         }
-        Spacer(Modifier.height(60.dp))
+        Spacer(modifier = Modifier.weight(1f))
+
         Button(
             onClick = { navController.navigate("ajoutlivre") },
             modifier = Modifier
@@ -259,9 +262,10 @@ fun EcranAjoutDeLivre(navController: NavHostController) {
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "Ajouter un livre",
-            style = MaterialTheme.typography.headlineMedium,
+            stringResource(R.string.add_book),
+            style = MaterialTheme.typography.headlineMedium
         )
+
         Spacer(Modifier.height(32.dp))
 
         TextField(
@@ -330,24 +334,17 @@ fun EcranDeProfil() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Profil utilisateur",
+            stringResource(R.string.profile_title),
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold
         )
 
         Spacer(Modifier.height(12.dp))
-
         Text(
-            text = "Accès : Consultation et gestion de la collection",
+            stringResource(R.string.profile_status),
             style = MaterialTheme.typography.bodyLarge
         )
 
-        Spacer(Modifier.height(12.dp))
-
-        Text(
-            text = "Statut : Connecté",
-            style = MaterialTheme.typography.bodyLarge
-        )
     }
 }
 
@@ -370,9 +367,10 @@ fun EcranParametreAvecTheme(isDarkTheme: Boolean, onThemeChange: (Boolean) -> Un
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
-                "Mode sombre",
+                stringResource(R.string.dark_mode),
                 color = MaterialTheme.colorScheme.onBackground
             )
+
             Spacer(Modifier.width(8.dp))
             Switch(checked = isDarkTheme, onCheckedChange = onThemeChange)
         }
@@ -380,6 +378,7 @@ fun EcranParametreAvecTheme(isDarkTheme: Boolean, onThemeChange: (Boolean) -> Un
     }
 
 }
+
 @Composable
 fun LivreListWithSearch(modifier: Modifier = Modifier) {
     var searchTitre by rememberSaveable { mutableStateOf("") }
@@ -458,13 +457,7 @@ fun LivreCard(livre: Livre, modifier: Modifier = Modifier) {
     }
 }
 
-
 /**
-@Preview(showBackground = true)
-@Composable
-fun AppPreview() {
-ImageDistanteAvancee()
-}
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun PreviewCollectionScreen() {
@@ -473,16 +466,9 @@ CollectionScreen()
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun PreviewLivreListWithSearch() {
-LivreListWithSearch()
-}
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
 fun PreviewAddBookScreen() {
 EcranAjoutDeLivre()
 }
-
 
  */
 

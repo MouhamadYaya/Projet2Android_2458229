@@ -1,15 +1,19 @@
 <resources>
-    <string name="app_name">Bilioteca</string>
-    <string name="welcome_message">¡Bienvenido a Bilioteca!</string>
-    <string name="language_selection">Selecciona un idioma</string>
-
+    <string name="app_name">Bibliotheque</string>
+    <string name="welcome_message">¡Bienvenido a la Bibliotheque!</string>
+    <string name="what_do_you_want">¿Qué deseas hacer?</string>
     <string name="home">Inicio</string>
     <string name="profile">Perfil</string>
-    <string name="settings">Ajustes</string>
-
+    <string name="settings">Configuración</string>
+    <string name="collection">Mi colección</string>
+    <string name="add_book">Añadir un libro</string>
+    <string name="add_book_title">Título del libro</string>
+    <string name="add_book_author">Autor</string>
+    <string name="add_book_screen_title">Añadir un libro</string>
+    <string name="profile_title">Perfil de usuario</string>
+    <string name="profile_status">Estado: Conectado</string>
+    <string name="settings_title">Pantalla de configuración</string>
     <string name="dark_mode">Modo oscuro</string>
-    <string name="add_book">Añadir un librok</string>
-    <string name="collection">mi colección</string>
-    <string name="livre_json">Livre_json</string>
-
+    <string name="book_type">Tipo</string>
+    <string name="livre_json">livres.json</string>
 </resources>
