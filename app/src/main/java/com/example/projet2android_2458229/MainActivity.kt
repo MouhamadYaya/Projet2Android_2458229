@@ -197,7 +197,6 @@ fun AppNavigation(isDarkTheme: Boolean, onThemeChange: (Boolean) -> Unit) {
  * Écran d'accueil de l'application.
  * @param navController contrôleur de navigation
  */
-
 @Composable
 fun EcranAccueil(navController: NavHostController) {
     val orientation = LocalConfiguration.current.orientation
@@ -214,7 +213,6 @@ fun EcranAccueil(navController: NavHostController) {
                 text = stringResource(R.string.home),
                 style = MaterialTheme.typography.headlineMedium
             )
-
             Spacer(Modifier.height(14.dp))
 
             Text(
@@ -222,7 +220,6 @@ fun EcranAccueil(navController: NavHostController) {
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onBackground
             )
-
             Spacer(Modifier.height(25.dp))
 
             Row(
@@ -234,8 +231,7 @@ fun EcranAccueil(navController: NavHostController) {
                     onClick = { navController.navigate("collection") },
                     modifier = Modifier
                         .weight(1f)
-                        .height(45.dp),
-                    shape = MaterialTheme.shapes.medium
+                        .height(45.dp)
                 ) {
                     Text(
                         stringResource(R.string.collection),
@@ -247,8 +243,7 @@ fun EcranAccueil(navController: NavHostController) {
                     onClick = { navController.navigate("ajoutlivre") },
                     modifier = Modifier
                         .weight(1f)
-                        .height(45.dp),
-                    shape = MaterialTheme.shapes.medium
+                        .height(45.dp)
                 ) {
                     Text(
                         stringResource(R.string.add_book),
@@ -275,16 +270,13 @@ fun EcranAccueil(navController: NavHostController) {
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onBackground
             )
-
-
             Spacer(modifier = Modifier.weight(1f))
 
             Button(
                 onClick = { navController.navigate("collection") },
                 modifier = Modifier
                     .fillMaxWidth(0.8f)
-                    .height(80.dp),
-                shape = MaterialTheme.shapes.medium
+                    .height(80.dp)
             ) {
                 Text(
                     stringResource(R.string.collection),
@@ -297,8 +289,7 @@ fun EcranAccueil(navController: NavHostController) {
                 onClick = { navController.navigate("ajoutlivre") },
                 modifier = Modifier
                     .fillMaxWidth(0.8f)
-                    .height(80.dp),
-                shape = MaterialTheme.shapes.medium
+                    .height(80.dp)
             ) {
                 Text(stringResource(R.string.add_book))
             }
@@ -347,7 +338,6 @@ fun EcranDeCollection(navController: NavHostController) {
 fun EcranAjoutDeLivre(navController: NavHostController) {
     var titre by rememberSaveable { mutableStateOf("") }
     var auteur by rememberSaveable { mutableStateOf("") }
-    var TypeDeLivre by rememberSaveable { mutableStateOf("") }
     val context = LocalContext.current
     val fichierJson = stringResource(R.string.livre_json)
     val orientation = LocalConfiguration.current.orientation
@@ -438,7 +428,6 @@ fun EcranAjoutDeLivre(navController: NavHostController) {
                 },
                 modifier = Modifier.fillMaxWidth(),
             )
-
             Spacer(Modifier.height(16.dp))
 
             TextField(
@@ -453,7 +442,6 @@ fun EcranAjoutDeLivre(navController: NavHostController) {
                 },
                 modifier = Modifier.fillMaxWidth(),
             )
-
             Spacer(Modifier.height(32.dp))
 
             Button(
@@ -492,7 +480,6 @@ fun EcranAjoutDeLivre(navController: NavHostController) {
  * profil de l'utilisateur.
  * Affiche des informations simples sur lutilisateur.
  */
-
 @Composable
 fun EcranDeProfil() {
     Column(
@@ -552,7 +539,6 @@ fun EcranParametreAvecTheme(isDarkTheme: Boolean, onThemeChange: (Boolean) -> Un
  * Affiche une liste de livres avec les champs de recherche.
  * @param modifier modificateur Compose optionnel
  */
-
 @Composable
 fun LivreListWithSearch(modifier: Modifier = Modifier) {
     var searchTitre by rememberSaveable { mutableStateOf("") }
@@ -567,7 +553,7 @@ fun LivreListWithSearch(modifier: Modifier = Modifier) {
                 onValueChange = { searchTitre = it },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 18.dp)
+                    .padding(horizontal = 14.dp)
             )
 
             TextField(
@@ -598,7 +584,6 @@ fun LivreListWithSearch(modifier: Modifier = Modifier) {
  * @param livre livre à afficher
  * @param modifier modificateur Compose optionnel
  */
-
 @Composable
 fun LivreCard(livre: Livre, modifier: Modifier = Modifier) {
     var isExpanded by rememberSaveable { mutableStateOf(false) }
